@@ -7,8 +7,9 @@ public class PlayerMovement : MonoBehaviour
 {
     public enum AbilityType { DoubleJump, Dash, Charge }
 
+    public Vector3 startPosition = new Vector3(-6, -1, 0);
     public AbilityType abilityType; //Speichert den Typ der Ability dieder Player aktuell hat.
-    int jumpsmax = 1; //Bestimmt die Anzhal der Jumps, wird nur beim double Jump auf 2 erhöht.
+    int jumpsMax = 1; //Bestimmt die Anzhal der Jumps, wird nur beim double Jump auf 2 erhï¿½ht.
     int jumps;
     bool isGrounded = true;
     public int dashstrength;
@@ -16,9 +17,9 @@ public class PlayerMovement : MonoBehaviour
     public float inputX;
     public float jumpHeight;
     private Rigidbody2D _rigidBody2D;
-    //Cooldown für den Dash
+    //Cooldown fï¿½r den Dash
     float cooldown;
-    //Speichert den die geladene Höhe des ChargeJumps
+    //Speichert den die geladene Hï¿½he des ChargeJumps
     public bool charging = false;
     public float charge;
 
@@ -34,15 +35,30 @@ public class PlayerMovement : MonoBehaviour
         MovePlayer();
         
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="collision"></param>
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Ground")
+        switch(collision.gameObject.tag)
         {
-            isGrounded = true;
-            jumps = jumpsmax;
+            case "Ground":
+                jumps = jumpsMax;
+                isGrounded = true;
+                break;
+            case "Spikes":
+                gameObject.transform.position = startPosition;
+                break;
+            default:
+                break;
         }
     }
 
+    /// <summary>
+    /// Setzt die Fï¿½higkeit des Spielers (DoubleJump, Dash, Charge)
+    /// </summary>
     void UpdateAbilityType()
     {
         //Switch zwischen den Abilities anhand  des Ability types
@@ -69,6 +85,9 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Bewegt den Player je nach Input nach links oder rechts oder fï¿½hrt bei GetKeyDown.Space Sprung aus
+    /// </summary>
     void MovePlayer()
     {
         inputX = Input.GetAxis("Horizontal");
@@ -111,13 +130,13 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isGrounded)
         {
-            //Wenn JUmp lädt der Sprung auf.
+            //Wenn JUmp lï¿½dt der Sprung auf.
             if (Input.GetButton("Jump"))
             {
                 charge += Time.deltaTime * 10;
                 charging = true;
             }
-            //Wenn losgelassen wird, wird der charge in sprung höhe genutzt
+            //Wenn losgelassen wird, wird der charge in sprung hï¿½he genutzt
             else if (charge > 0)
             {
                 _rigidBody2D.AddForce(Vector2.up * charge, ForceMode2D.Impulse);
