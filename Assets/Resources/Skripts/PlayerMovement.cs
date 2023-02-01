@@ -5,12 +5,10 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    //public float jumpForce;
+    public enum AbilityType { DoubleJump, Dash, Charge }
 
-    //Speichert den Typ der Ability dieder Player aktuell hat.
-    public int abilityType;
-    //Bestimmt die Anzhal der Jumps, wird nur beim double Jump auf 2 erhöht.
-    int jumpsmax = 1;
+    public AbilityType abilityType; //Speichert den Typ der Ability dieder Player aktuell hat.
+    int jumpsmax = 1; //Bestimmt die Anzhal der Jumps, wird nur beim double Jump auf 2 erhöht.
     int jumps;
     public float speed;
     float inputX;
@@ -25,24 +23,43 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        UpdateAbilityType();
+        MovePlayer();
+        
+    }
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Ground")
+        {
+            jumps = jumpsmax;
+        }
+    }
+
+    void UpdateAbilityType()
+    {
         //Switch zwischen den Abilities anhand  des Ability types
         switch (abilityType)
         {
             //Double Jump
-            case 1:
+            case AbilityType.DoubleJump:
                 jumpsmax = 2;
                 break;
             //Dash
-            case 2:
+            case AbilityType.Dash:
                 jumpsmax = 1;
                 break;
             //Charge Jump
-            case 3:
+            case AbilityType.Charge:
                 jumpsmax = 1;
                 break;
+            default:
+                break;
         }
-        inputX = Input.GetAxis("Horizontal");
+    }
 
+    void MovePlayer()
+    {
+        inputX = Input.GetAxis("Horizontal");
         Vector3 movement = new Vector3(speed * inputX, 0);
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -55,12 +72,5 @@ public class PlayerMovement : MonoBehaviour
         }
         movement *= Time.deltaTime;
         transform.Translate(movement);
-    }
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Ground")
-        {
-            jumps = jumpsmax;
-        }
     }
 }
