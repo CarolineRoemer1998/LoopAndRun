@@ -8,20 +8,22 @@ public class PlayerMovement : MonoBehaviour
     public enum AbilityType { DoubleJump, Dash, Charge }
 
     public Vector3 startPosition = new Vector3(-6, -1, 0);
-    public AbilityType abilityType; //Speichert den Typ der Ability dieder Player aktuell hat.
-    int jumpsMax = 1; //Bestimmt die Anzhal der Jumps, wird nur beim double Jump auf 2 erh�ht.
-    int jumps;
+    public AbilityType abilityType; //Speichert den Typ der Ability dieder Player aktuell hat
+    int jumpsMax = 1; //Bestimmt die Anzhal der Jumps, wird nur beim double Jump auf 2 erhoeht
+    int jumps; //Counted die Anzahl der bereits benutzten Jumps
     bool isGrounded = true;
     public int dashstrength;
     public float speed;
     public float inputX;
     public float jumpHeight;
     private Rigidbody2D _rigidBody2D;
-    //Cooldown f�r den Dash
+    Vector3 movement;
+    //Cooldown fuer den Dash
     float cooldown;
-    //Speichert den die geladene H�he des ChargeJumps
+    //Speichert den die geladene Hoehe des ChargeJumps
     public bool charging = false;
     public float charge;
+    public float chargeMax;
 
     private void Start()
     {
@@ -31,8 +33,8 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateAbilityType();
         MovePlayer();
+        UpdateAbilityType();
         
     }
 
@@ -45,11 +47,14 @@ public class PlayerMovement : MonoBehaviour
         switch(collision.gameObject.tag)
         {
             case "Ground":
-                jumps = jumpsMax;
+                jumps = 0;
                 isGrounded = true;
                 break;
             case "Spikes":
                 gameObject.transform.position = startPosition;
+                break;
+            case "Goal":
+
                 break;
             default:
                 break;
@@ -57,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Setzt die F�higkeit des Spielers (DoubleJump, Dash, Charge)
+    /// Setzt die Faehigkeit des Spielers (DoubleJump, Dash, Charge)
     /// </summary>
     void UpdateAbilityType()
     {
@@ -86,26 +91,24 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Bewegt den Player je nach Input nach links oder rechts oder f�hrt bei GetKeyDown.Space Sprung aus
+    /// Bewegt den Player je nach Input nach links oder rechts 
     /// </summary>
     void MovePlayer()
     {
         inputX = Input.GetAxis("Horizontal");
-        Vector3 movement = new Vector3(speed * inputX, 0);
+        movement = new Vector3(speed * inputX, 0);
         movement *= Time.deltaTime;
         transform.Translate(movement);
     }
 
     void Jump()
     {
-        if (Input.GetButton("Jump"))
+        if (Input.GetKeyDown(KeyCode.Space) && jumps < jumpsMax)
         {
-            if (jumps > 0)
-            {
-                isGrounded = false;
-                _rigidBody2D.AddForce(Vector2.up * jumpHeight, ForceMode2D.Impulse);
-                jumps -= 1;
-            }
+            _rigidBody2D.velocity = new Vector3(movement.x, 0);
+            isGrounded = false;
+            _rigidBody2D.AddForce(Vector2.up * jumpHeight, ForceMode2D.Impulse);
+            jumps += 1;
         }
     }
 
@@ -130,13 +133,13 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isGrounded)
         {
-            //Wenn JUmp l�dt der Sprung auf.
-            if (Input.GetButton("Jump"))
+            //Wenn Jump laedt der Sprung auf
+            if (Input.GetButton("Jump") && charge < chargeMax)
             {
                 charge += Time.deltaTime * 10;
                 charging = true;
             }
-            //Wenn losgelassen wird, wird der charge in sprung h�he genutzt
+            //Wenn losgelassen wird, wird der charge in sprung haehe genutzt
             else if (charge > 0)
             {
                 _rigidBody2D.AddForce(Vector2.up * charge, ForceMode2D.Impulse);
