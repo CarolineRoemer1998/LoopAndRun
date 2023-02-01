@@ -66,18 +66,18 @@ public class PlayerMovement : MonoBehaviour
         {
             //Double Jump
             case AbilityType.DoubleJump:
-                jumpsmax = 2;
+                jumpsMax = 2;
                 Jump();
                 break;
             //Dash
             case AbilityType.Dash:
-                jumpsmax = 1;
+                jumpsMax = 1;
                 DoDash();
                 Jump();
                 break;
             //Charge Jump
             case AbilityType.Charge:
-                jumpsmax = 1;
+                jumpsMax = 1;
                 ChargeJump();
                 break;
             default:
