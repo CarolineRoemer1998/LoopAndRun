@@ -49,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Collision mit Spikes/Acid oder Ziel
     /// </summary>
     /// <param name="collision"></param>
     void OnCollisionEnter2D(Collision2D collision)
@@ -57,10 +57,11 @@ public class PlayerMovement : MonoBehaviour
         switch(collision.gameObject.tag)
         {
             case "Spikes":
+            case "Acid":
                 gameObject.transform.position = startPosition;
                 break;
             case "Goal":
-
+                // TODO: Change Ability
                 break;
             default:
                 break;
@@ -75,18 +76,15 @@ public class PlayerMovement : MonoBehaviour
         //Switch zwischen den Abilities anhand  des Ability types
         switch (abilityType)
         {
-            //Double Jump
             case AbilityType.DoubleJump:
                 jumpsMax = 2;
                 Jump();
                 break;
-            //Dash
             case AbilityType.Dash:
                 jumpsMax = 1;
                 DoDash();
                 Jump();
                 break;
-            //Charge Jump
             case AbilityType.Charge:
                 jumpsMax = 1;
                 ChargeJump();
@@ -96,9 +94,14 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updatet isGrounded.
+    /// Fragt ab, ob Spieler "Jump" drückt, um direktes, erneutes Springen zu verhindern, 
+    /// wenn Spieler zu nah an Boden ist und dadurch Jumpanzahl resettet wird.
+    /// </summary>
     void UpdateisGrounded()
     {
-        if (!Input.GetButton("Jump")) //Wird abgefragt ob spieler "Jump" drückt weil sonnst die Jumpanzahl direkt nach absprung resettet wird, da der Ground Collider noch zu nah am bround ist
+        if (!Input.GetButton("Jump")) 
         {
             isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
             if (isGrounded)
@@ -107,6 +110,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+
     /// <summary>
     /// Bewegt den Player je nach Input nach links oder rechts 
     /// </summary>
@@ -163,6 +167,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+
     //Nur zur Sicherheit gespeichert.
     void DoDashOld()
     {
