@@ -7,8 +7,9 @@ public class PlayerMovement : MonoBehaviour
 {
     public enum AbilityType { DoubleJump, Dash, Charge }
 
+    public Vector3 startPosition = new Vector3(-6, -1, 0);
     public AbilityType abilityType; //Speichert den Typ der Ability dieder Player aktuell hat.
-    int jumpsmax = 1; //Bestimmt die Anzhal der Jumps, wird nur beim double Jump auf 2 erhöht.
+    int jumpsMax = 1; //Bestimmt die Anzhal der Jumps, wird nur beim double Jump auf 2 erhöht.
     int jumps;
     public float speed;
     float inputX;
@@ -27,14 +28,29 @@ public class PlayerMovement : MonoBehaviour
         MovePlayer();
         
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="collision"></param>
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Ground")
+        switch(collision.gameObject.tag)
         {
-            jumps = jumpsmax;
+            case "Ground":
+                jumps = jumpsMax;
+                break;
+            case "Spikes":
+                gameObject.transform.position = startPosition;
+                break;
+            default:
+                break;
         }
     }
 
+    /// <summary>
+    /// Setzt die Fähigkeit des Spielers (DoubleJump, Dash, Charge)
+    /// </summary>
     void UpdateAbilityType()
     {
         //Switch zwischen den Abilities anhand  des Ability types
@@ -42,21 +58,24 @@ public class PlayerMovement : MonoBehaviour
         {
             //Double Jump
             case AbilityType.DoubleJump:
-                jumpsmax = 2;
+                jumpsMax = 2;
                 break;
             //Dash
             case AbilityType.Dash:
-                jumpsmax = 1;
+                jumpsMax = 1;
                 break;
             //Charge Jump
             case AbilityType.Charge:
-                jumpsmax = 1;
+                jumpsMax = 1;
                 break;
             default:
                 break;
         }
     }
 
+    /// <summary>
+    /// Bewegt den Player je nach Input nach links oder rechts oder führt bei GetKeyDown.Space Sprung aus
+    /// </summary>
     void MovePlayer()
     {
         inputX = Input.GetAxis("Horizontal");
