@@ -5,7 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - Damage
   - Spikes
+  - Acid
   layers:
   - Default
   - TransparentFX
