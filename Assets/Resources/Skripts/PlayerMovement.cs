@@ -9,8 +9,10 @@ public class PlayerMovement : MonoBehaviour
 
     public Vector3 startPosition = new Vector3(-6, -1, 0);
     public AbilityType abilityType; //Speichert den Typ der Ability dieder Player aktuell hat
+    public Animator animator;
 
     private Rigidbody2D rb;
+
     //Movement
     private Vector3 movement;
     public float speed;
@@ -28,6 +30,9 @@ public class PlayerMovement : MonoBehaviour
     public float charge;  //Speichert den die geladene Hoehe des ChargeJumps
     public float chargeMax;
 
+    //Animation States
+    private float stillTimer;
+    private bool inDash;
 
     //Groundcheck 
     public bool isGrounded;
@@ -46,6 +51,8 @@ public class PlayerMovement : MonoBehaviour
         MovePlayer();
         UpdateAbilityType();
         UpdateisGrounded();
+        InvertPlayer();
+        Updateanimations();
     }
 
     /// <summary>
@@ -66,6 +73,34 @@ public class PlayerMovement : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    void InvertPlayer()
+    {
+        if (rb.velocity.x > 0)
+        {
+            gameObject.GetComponent<SpriteRenderer>().flipX = false;
+        } 
+        else if(rb.velocity.x < 0)
+        {
+            gameObject.GetComponent<SpriteRenderer>().flipX = true;
+
+        }
+    }
+
+    void Updateanimations()
+    {
+        //StillTime / Berechnet wie lange der Player Still stand und stilt kleine animation ab
+        if (rb.velocity.x == 0 && rb.velocity.y == 0)
+            stillTimer += Time.deltaTime;
+        if (rb.velocity.x != 0 || rb.velocity.y != 0)
+            stillTimer = 0;
+
+        //Übergibt an die Animation die Werte mit denen bestimmt wird welche Animation abgespielt werden soll
+        animator.SetBool("InDash", inDash);
+        animator.SetFloat("StillTime", stillTimer);
+        animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+        animator.SetFloat("Charging", charge);
     }
 
     /// <summary>
@@ -147,8 +182,11 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButton("Fire3"))
         {
             Physics2D.gravity = new Vector2(0, 0);
-            rb.velocity = new Vector3(dashstrength*directionlock, 0);
+            rb.velocity = new Vector3(dashstrength * directionlock, 0);
+            inDash = true;
         }
+        else
+            inDash = false;
      }
 
     void ChargeJump()
