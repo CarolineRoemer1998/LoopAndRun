@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     int jumpsMax = 1; //Bestimmt die Anzhal der Jumps, wird nur beim double Jump auf 2 erhoeht
     int jumps; //Counted die Anzahl der bereits benutzten Jumps
 
-    private float directionlock; //Speichert beim Dash die Richtig vom start des Dashes 
+    private float directionlock = 1; //Speichert beim Dash die Richtig vom start des Dashes 
     float cooldown; //Cooldown fuer den Dash / Kann in final version weg
     public int dashstrength;
 
@@ -135,13 +135,18 @@ public class PlayerMovement : MonoBehaviour
 
     void DoDash()
     {
-        if (Input.GetButtonDown("Fire3"))
+        Physics2D.gravity = new Vector2(0, -9.81f);
+        if (inputX > 0)
         {
-            directionlock = rb.velocity.x;
-
+            directionlock = 1;
+        }
+        else if (inputX < 0)
+        {
+            directionlock = -1;
         }
         if (Input.GetButton("Fire3"))
         {
+            Physics2D.gravity = new Vector2(0, 0);
             rb.velocity = new Vector3(dashstrength*directionlock, 0);
         }
      }
@@ -155,7 +160,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (charge < chargeMax)
                 {
-                charge += Time.deltaTime * 15;
+                charge += Time.deltaTime * 30;
                 }
             }
             //Wenn losgelassen wird, wird der charge in sprung haehe genutzt
@@ -167,7 +172,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
-
+    
     //Nur zur Sicherheit gespeichert.
     void DoDashOld()
     {
