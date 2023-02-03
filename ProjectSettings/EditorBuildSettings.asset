@@ -12,6 +12,12 @@ EditorBuildSettings:
     path: Assets/Scenes/StartScreen2.unity
     guid: 27c6d3ac10740f044885473928e10396
   - enabled: 1
-    path: Assets/Scenes/LoopLevel.unity
-    guid: a8cf6e56e489a98498003956d1f89512
+    path: Assets/Scenes/Level_1.unity
+    guid: 8ba911d81f3064041bbd06920db01b6a
+  - enabled: 1
+    path: Assets/Scenes/Level_2.unity
+    guid: e0c99c0be854c4447b17dbb61114e500
+  - enabled: 1
+    path: Assets/Scenes/Level_3.unity
+    guid: 83ed60fd120cd5b46a1d0d0d6f78a30a
   m_configObjects: {}

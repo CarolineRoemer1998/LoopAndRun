@@ -8,6 +8,7 @@ TagManager:
   - Damage
   - Spikes
   - Acid
+  - Goal
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - Game World
   - Player
   - Ground
-  - 
+  - Goal
   - 
   - 
   - 

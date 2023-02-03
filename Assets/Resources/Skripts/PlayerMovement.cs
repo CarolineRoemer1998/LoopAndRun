@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 public class PlayerMovement : MonoBehaviour
@@ -33,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
     //Animation States
     private float stillTimer;
     private bool inDash;
+    public int scenename;
 
     //Death
     private float deathTimer;
@@ -77,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
                 StartCoroutine(Die());
                 break;
             case "Goal":
-                // TODO: Change Ability
+                SceneManager.LoadScene(scenename);
                 break;
             default:
                 break;
