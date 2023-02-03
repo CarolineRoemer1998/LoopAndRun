@@ -34,6 +34,12 @@ public class PlayerMovement : MonoBehaviour
     private float stillTimer;
     private bool inDash;
 
+    //Death
+    private float deathTimer;
+    private float respawnTimer;
+    private Vector3 deathPosition;
+    private bool isDead;
+
     //Groundcheck 
     public bool isGrounded;
     public Transform groundCheck;
@@ -48,11 +54,14 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MovePlayer();
-        UpdateAbilityType();
-        UpdateisGrounded();
-        InvertPlayer();
-        Updateanimations();
+        if (!isDead)
+        {
+            MovePlayer();
+            UpdateAbilityType();
+            UpdateisGrounded();
+            InvertPlayer();
+            Updateanimations();
+        }
     }
 
     /// <summary>
@@ -65,7 +74,7 @@ public class PlayerMovement : MonoBehaviour
         {
             case "Spikes":
             case "Acid":
-                gameObject.transform.position = startPosition;
+                StartCoroutine(Die());
                 break;
             case "Goal":
                 // TODO: Change Ability
@@ -73,6 +82,23 @@ public class PlayerMovement : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    IEnumerator Die()
+    {
+        animator.SetBool("Dead", true);
+        Physics2D.gravity = new Vector2(0, 0);
+        if (!isDead)
+            deathPosition = new Vector3(rb.position.x, rb.position.y, 0);            
+        rb.position = deathPosition;
+        isDead = true;
+        yield return new WaitForSeconds(1.16f);
+        gameObject.transform.position = startPosition;
+        Physics2D.gravity = new Vector2(0, -9.81f);
+        yield return new WaitForSeconds(0.12f);
+        isDead = false;
+        animator.SetBool("Dead", false);
+
     }
 
     void InvertPlayer()
@@ -84,7 +110,6 @@ public class PlayerMovement : MonoBehaviour
         else if(rb.velocity.x < 0)
         {
             gameObject.GetComponent<SpriteRenderer>().flipX = true;
-
         }
     }
 
@@ -171,19 +196,20 @@ public class PlayerMovement : MonoBehaviour
     void DoDash()
     {
         Physics2D.gravity = new Vector2(0, -9.81f);
-        if (inputX > 0)
+        if (Input.GetButtonDown("Fire3"))
         {
-            directionlock = 1;
+            if (inputX > 0)
+                directionlock = 1;
+            else if (inputX < 0)
+                directionlock = -1;
         }
-        else if (inputX < 0)
-        {
-            directionlock = -1;
-        }
+
         if (Input.GetButton("Fire3"))
         {
             Physics2D.gravity = new Vector2(0, 0);
             rb.velocity = new Vector3(dashstrength * directionlock, 0);
             inDash = true;
+            jumps = jumpsMax;
         }
         else
             inDash = false;
