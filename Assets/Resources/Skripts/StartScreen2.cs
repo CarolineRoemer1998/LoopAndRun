@@ -19,6 +19,6 @@ public class StartScreen2 : MonoBehaviour
 
     void StartGame()
     {
-        SceneManager.LoadScene("LoopLevel");
+        SceneManager.LoadScene("Level_1");
     }
 }

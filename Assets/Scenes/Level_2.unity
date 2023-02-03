@@ -14368,6 +14368,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2173060087921382539, guid: 4ce7b532f25529b4a807df82975de2b8, type: 3}
+      propertyPath: scenename
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2173060087921382539, guid: 4ce7b532f25529b4a807df82975de2b8, type: 3}
       propertyPath: abilityType
       value: 1
       objectReference: {fileID: 0}
